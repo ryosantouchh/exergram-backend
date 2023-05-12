@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.get("/", activityController.getAllActivity); // get all activities by user , need auth
 router.post("/", activityController.createActivity);
-router.get("/count", activityController.countActivity);
 
 router.use("/:activityId", activityUtil.activityLengthCheck);
 router.get("/:activityId", activityController.getActivityById); // get one activity by _id , need auth

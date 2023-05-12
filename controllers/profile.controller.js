@@ -5,7 +5,7 @@ const getUserData = async (req, res, next) => {
     if (req.params.userId.length !== 24)
       res.status(400).send({ message: "incorrect user_id", statusCode: 400 });
 
-    const { userId } = req.params;
+    const { userId } = req.params; // mock
     const result = await userModel.findById(userId);
 
     if (!result)
@@ -27,7 +27,7 @@ const updateUserData = async (req, res, next) => {
         .status(400)
         .send({ message: "username cannot change", statusCode: 400 });
 
-    const { userId } = req.params;
+    const { userId } = req.params; // mock
     const lastUpdatedAt = new Date();
     const updateData = { ...req.body, lastUpdatedAt };
     const result = await userModel.findByIdAndUpdate(userId, updateData, {

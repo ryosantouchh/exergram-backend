@@ -1,14 +1,6 @@
 const activityModel = require("../models/activity.model.js");
 const activityUtil = require("../utils/activity.util.js");
 
-const countActivity = async (req, res, next) => {
-  const count_data = await activityModel.countDocuments({
-    userId: "64590f3b50d6e40d65c10657",
-  });
-
-  res.status(200).send({ count_all_activity: count_data });
-};
-
 const getAllActivity = async (req, res, next) => {
   try {
     // req.user for contain userId value at authen level
@@ -25,6 +17,11 @@ const getAllActivity = async (req, res, next) => {
       },
       {
         $facet: {
+          count_all_activity: [
+            {
+              $count: "count",
+            },
+          ],
           count_activity_by_type: [
             {
               $group: {
@@ -114,5 +111,4 @@ module.exports = {
   createActivity,
   updateActivityById,
   deleteActivityById,
-  countActivity,
 };
