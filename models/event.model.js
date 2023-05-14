@@ -14,9 +14,4 @@ const eventSchema = new Schema({
 const collectionName = "events";
 const eventModel = mongoose.model(collectionName, eventSchema);
 
-// connect at mongodb atlas
-mongoose.connect(
-  `mongodb+srv://admin:${PASSWORD}@exergramcluster.n0m9se3.mongodb.net/`
-);
-
 module.exports = eventModel;

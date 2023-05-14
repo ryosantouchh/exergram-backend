@@ -6,6 +6,7 @@ const mongodb = require("./mongodb/connection.js");
 
 const apiRoute = require("./routes/index.js");
 dotenv.config();
+// require('dotenv').config()
 
 const app = express();
 

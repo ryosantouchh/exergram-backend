@@ -48,10 +48,11 @@ const getAllActivity = async (req, res, next) => {
 const createActivity = async (req, res, next) => {
   try {
     const userId = "64590f3b50d6e40d65c10657"; // mock userId ... need token
-    const createdAt = new Date();
+    const createdAt = activityUtil.generateDateGMT7();
     const newActivity = { ...req.body, userId, createdAt };
-    await activityModel.create(newActivity);
-    res.status(201).send("create activity completed");
+    const res1 = await activityModel.create(newActivity);
+    // res.status(201).send("create activity completed");
+    res.status(201).send(res1);
   } catch (error) {
     next(error);
   }
@@ -76,7 +77,7 @@ const getActivityById = async (req, res, next) => {
 const updateActivityById = async (req, res, next) => {
   try {
     const { activityId } = req.params;
-    const lastUpdatedAt = new Date();
+    const lastUpdatedAt = activityUtil.generateDateGMT7();
     const updateActivity = { ...req.body, lastUpdatedAt };
     const result = await activityModel.findByIdAndUpdate(
       activityId,
