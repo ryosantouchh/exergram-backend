@@ -12,7 +12,7 @@ const activitySchema = new Schema({
   lastUpdatedAt: { type: Date },
   duration: { type: Number, required: true },
   distance: { type: Number },
-  image: { type: String },
+  image: { public_id: { type: String }, url: { type: String } },
   note: { type: String },
 });
 

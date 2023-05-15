@@ -1,5 +1,6 @@
 const activityModel = require("../models/activity.model.js");
 const activityUtil = require("../utils/activity.util.js");
+const cloudinary = require("../utils/cloudinary.js");
 
 const getAllActivity = async (req, res, next) => {
   try {
@@ -48,11 +49,37 @@ const getAllActivity = async (req, res, next) => {
 const createActivity = async (req, res, next) => {
   try {
     const userId = "64590f3b50d6e40d65c10657"; // mock userId ... need token
+
+    const { title, type, activityDate, duration, note, image, distance } =
+      req.body;
     const createdAt = activityUtil.generateDateGMT7();
-    const newActivity = { ...req.body, userId, createdAt };
-    const res1 = await activityModel.create(newActivity);
-    // res.status(201).send("create activity completed");
-    res.status(201).send(res1);
+
+    const newActivity = {
+      userId,
+      title,
+      type,
+      activityDate,
+      duration,
+      distance,
+      note,
+      createdAt,
+    };
+    if (image) {
+      const img_url = await cloudinary.uploader
+        .upload(image, {
+          folder: "exergram",
+        })
+        .then((res) => {
+          console.log(res);
+          newActivity.image = { public_id: res.public_id, url: res.secure_url };
+        });
+      // adding image url to activity object
+      // "https://res.cloudinary.com/{cloud_name}/{image_type}/v{version}/{public_id}.{format}" to render in frontend
+    }
+
+    const response = await activityModel.create(newActivity);
+    console.log(response);
+    res.status(201).send("Activity Created Successfully");
   } catch (error) {
     next(error);
   }

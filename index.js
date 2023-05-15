@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongodb = require("./mongodb/connection.js");
+const cloudinary = require("cloudinary");
 
 const apiRoute = require("./routes/index.js");
 dotenv.config();
@@ -13,11 +14,18 @@ const app = express();
 const HOST = process.env.SERVER || "localhost";
 const PORT = process.env.PORT || 8080;
 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_KEY_SECRET,
+});
+
 // #1 : CORS
 app.use(cors());
 
 // #2 : parse JSON to object
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/", apiRoute);
 
