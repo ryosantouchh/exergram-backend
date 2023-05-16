@@ -72,7 +72,8 @@ const createActivity = async (req, res, next) => {
         .then((res) => {
           console.log(res);
           newActivity.image = { public_id: res.public_id, url: res.secure_url };
-        });
+        })
+        .catch((err) => console.log(err));
       // adding image url to activity object
       // "https://res.cloudinary.com/{cloud_name}/{image_type}/v{version}/{public_id}.{format}" to render in frontend
     }
