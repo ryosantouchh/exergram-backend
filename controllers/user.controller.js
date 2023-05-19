@@ -4,11 +4,13 @@ const createUser = async (req, res, next) => {
   try {
     const registeredAt = new Date();
     const newUser = { ...req.body, registeredAt };
+    console.log(req.body);
+    console.log(newUser);
     await userModel.create(newUser);
     res.status(201).send("create user completed");
   } catch (error) {
-    error.statusCode = 400;
-    error.message = "username or email are already exist";
+    // error.statusCode = 400;
+    // error.message = "username or email are already exist";
     next(error);
   }
 };
