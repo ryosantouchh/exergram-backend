@@ -21,4 +21,12 @@ const generateDateGMT7 = () => {
   return gmt7Date;
 };
 
-module.exports = { skipValue, generateDateGMT7 };
+const countActivityByType = (activity_data) => {
+  const result = {};
+  activity_data.forEach((item) => {
+    result[item._id] = item.count;
+  });
+  return result;
+};
+
+module.exports = { skipValue, generateDateGMT7, countActivityByType };
