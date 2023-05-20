@@ -12,7 +12,7 @@ const getAllActivity = async (req, res, next) => {
       {
         $match: {
           $expr: {
-            $eq: ["$userId", { $toObjectId: "64590f3b50d6e40d65c10657" }],
+            $eq: ["$userId", { $toObjectId: req.user._id }],
           },
         },
       },
@@ -48,7 +48,7 @@ const getAllActivity = async (req, res, next) => {
 
 const createActivity = async (req, res, next) => {
   try {
-    const userId = "64590f3b50d6e40d65c10657"; // mock userId ... need token
+    const userId = req.user._id;
 
     const { title, type, activityDate, duration, note, image, distance } =
       req.body;
