@@ -1,18 +1,20 @@
 const userModel = require("../models/user.model.js");
 const tokenUtil = require("../utils/token.util.js");
+const activityUtil = require("../utils/activity.util.js");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const register = async (req, res, next) => {
   try {
-    const registeredAt = new Date();
+    const registeredAt = activityUtil.generateDateGMT7();
+
     const hashedPassword = bcrypt.hashSync(
       req.body.password,
       +process.env.SALT_ROUND
     );
     const newUser = { ...req.body, registeredAt, password: hashedPassword };
-    console.log(req.body);
-    console.log(newUser);
+    // console.log(req.body);
+    // console.log(newUser);
     await userModel.create(newUser);
     res.status(201).send("create user completed");
   } catch (error) {
@@ -30,12 +32,15 @@ const login = async (req, res, next) => {
     const isUsername = validator.isEmpty(username);
 
     const userData = await userModel.findOne({ username });
-    console.log(userData);
+    // console.log(userData);
     const hashedPassword = userData.password;
-    console.log(hashedPassword);
+    // console.log(hashedPassword);
     const checkPassword = bcrypt.compareSync(password, hashedPassword);
 
-    if (!checkPassword) throw new Error("incorrect username or password");
+    if (!checkPassword)
+      res
+        .status(400)
+        .send({ statusCode: 400, message: "incorrect username or password" });
 
     // generate token
     const payload = {
