@@ -1,8 +1,15 @@
 const skipValue = (page) => {
-  let result = (page - 1) * 10;
-  return result;
+  if (page) {
+    let result = (page - 1) * 10;
+    return result;
+  }
+
+  if (!page) {
+    return 0;
+  }
 };
 
+// ********** DEPRECRETE --- don't need to use GMT7 function
 const generateDateGMT7 = () => {
   // Create a new Date object with the current date and time
   let currentDate = new Date();

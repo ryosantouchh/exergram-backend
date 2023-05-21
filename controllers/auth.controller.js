@@ -6,7 +6,8 @@ const validator = require("validator");
 
 const register = async (req, res, next) => {
   try {
-    const registeredAt = activityUtil.generateDateGMT7();
+    // const registeredAt = activityUtil.generateDateGMT7();
+    const registeredAt = new Date();
 
     const hashedPassword = bcrypt.hashSync(
       req.body.password,
@@ -30,12 +31,10 @@ const login = async (req, res, next) => {
 
     // 1. validate
     if (!username || !password)
-      res
-        .status(400)
-        .send({
-          statusCode: 400,
-          message: "Username or password are required",
-        });
+      res.status(400).send({
+        statusCode: 400,
+        message: "Username or password are required",
+      });
 
     const foundedUserData = await userModel.findOne({ username });
 

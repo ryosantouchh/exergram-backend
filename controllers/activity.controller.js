@@ -8,7 +8,8 @@ const createActivity = async (req, res, next) => {
 
     const { title, type, activityDate, duration, note, image, distance } =
       req.body;
-    const createdAt = activityUtil.generateDateGMT7();
+    // const createdAt = activityUtil.generateDateGMT7();
+    const createdAt = new Date();
 
     const newActivity = {
       userId,
@@ -44,8 +45,11 @@ const createActivity = async (req, res, next) => {
 
 const getAllActivity = async (req, res, next) => {
   try {
-    const skip_value = activityUtil.skipValue(1); // mock value sent to function
+    // algorithms for send data to match pagination at web application
+    const { pageparams } = req.headers;
+    const skip_value = activityUtil.skipValue(pageparams);
 
+    // query data
     const foundedData = await activityModel.aggregate([
       {
         $match: {
@@ -70,7 +74,7 @@ const getAllActivity = async (req, res, next) => {
             },
           ],
           all_activity_data: [
-            { $sort: { createdAt: -1 } },
+            { $sort: { activityDate: -1 } },
             { $skip: skip_value },
             { $limit: 10 },
           ],
@@ -164,7 +168,8 @@ const updateActivityById = async (req, res, next) => {
         })
         .catch((err) => console.log(err));
     }
-    const lastUpdatedAt = activityUtil.generateDateGMT7();
+    // const lastUpdatedAt = activityUtil.generateDateGMT7();
+    const lastUpdatedAt = new Date();
     updateActivity.lastUpdatedAt = lastUpdatedAt;
     // console.log(updateActivity);
     const oldData = await activityModel.findByIdAndUpdate(
@@ -172,10 +177,12 @@ const updateActivityById = async (req, res, next) => {
       updateActivity
       // { new: true } return old result for destroy image
     );
-    if (!oldData)
+
+    if (!oldData) {
       res
         .status(404)
         .send({ message: "activity is not found", statusCode: 404 });
+    }
     // console.log(oldData);
 
     if (oldData.image.public_id) {
