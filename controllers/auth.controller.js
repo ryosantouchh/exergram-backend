@@ -29,11 +29,22 @@ const login = async (req, res, next) => {
     const { username, password } = req.body;
 
     // 1. validate
-    const isUsername = validator.isEmpty(username);
+    if (!username || !password)
+      res
+        .status(400)
+        .send({
+          statusCode: 400,
+          message: "Username or password are required",
+        });
 
-    const userData = await userModel.findOne({ username });
-    // console.log(userData);
-    const hashedPassword = userData.password;
+    const foundedUserData = await userModel.findOne({ username });
+
+    if (!foundedUserData)
+      res
+        .status(404)
+        .send({ statusCode: 404, message: "Username or password are wrong" });
+
+    const hashedPassword = foundedUserData.password;
     // console.log(hashedPassword);
     const checkPassword = bcrypt.compareSync(password, hashedPassword);
 
@@ -44,9 +55,9 @@ const login = async (req, res, next) => {
 
     // generate token
     const payload = {
-      userId: userData._id,
-      firstname: userData.firstname,
-      lastname: userData.lastname,
+      userId: foundedUserData._id,
+      firstname: foundedUserData.firstname,
+      lastname: foundedUserData.lastname,
     };
     const token = tokenUtil.generateToken(payload);
 

@@ -128,20 +128,68 @@ const getActivityById = async (req, res, next) => {
 const updateActivityById = async (req, res, next) => {
   try {
     const { activityId } = req.params;
-    const lastUpdatedAt = activityUtil.generateDateGMT7();
-    const updateActivity = { ...req.body, lastUpdatedAt };
-    const result = await activityModel.findByIdAndUpdate(
-      activityId,
-      updateActivity,
-      { new: true }
-    );
+    const { title, type, activityDate, duration, note, image, distance } =
+      req.body;
 
-    if (!result)
+    const updateActivity = {
+      // userId,
+      title,
+      type,
+      activityDate,
+      duration,
+      distance,
+      note,
+      // createdAt,
+    };
+
+    // console.log(image);
+
+    if (image === "do not have image") {
+      await activityModel.findByIdAndUpdate(activityId, {
+        $unset: { image: 1 },
+      });
+    }
+
+    if (image) {
+      const img_url = await cloudinary.uploader
+        .upload(image, {
+          folder: "exergram",
+        })
+        .then((res) => {
+          // console.log(res);
+          updateActivity.image = {
+            public_id: res.public_id,
+            url: res.secure_url,
+          };
+        })
+        .catch((err) => console.log(err));
+    }
+    const lastUpdatedAt = activityUtil.generateDateGMT7();
+    updateActivity.lastUpdatedAt = lastUpdatedAt;
+    // console.log(updateActivity);
+    const oldData = await activityModel.findByIdAndUpdate(
+      activityId,
+      updateActivity
+      // { new: true } return old result for destroy image
+    );
+    if (!oldData)
       res
         .status(404)
         .send({ message: "activity is not found", statusCode: 404 });
+    // console.log(oldData);
 
-    res.status(201).send(result);
+    if (oldData.image.public_id) {
+      const img_url = await cloudinary.uploader
+        .destroy(oldData.image.public_id, {
+          folder: "exergram",
+        })
+        .then((response) => {
+          // console.log(response);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    res.status(201).send(oldData);
   } catch (error) {
     next(error);
   }
@@ -150,8 +198,24 @@ const updateActivityById = async (req, res, next) => {
 const deleteActivityById = async (req, res, next) => {
   try {
     const { activityId } = req.params;
-    await activityModel.findByIdAndDelete(activityId);
-    res.status(200).send("delete completed");
+    console.log(activityId);
+    const response = await activityModel.findByIdAndDelete(activityId);
+    console.log(response);
+
+    if (response.image.public_id) {
+      const img_url = await cloudinary.uploader
+        .destroy(response.image.public_id, {
+          folder: "exergram",
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    // adding image url to activity object
+    // "https://res.cloudinary.com/{cloud_name}/{image_type}/v{version}/{public_id}.{format}" to render in frontend
+    res.status(200).send({ statusCode: 200, message: "delete successfully" });
   } catch (error) {
     next(error);
   }

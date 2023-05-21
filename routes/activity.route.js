@@ -11,7 +11,11 @@ router.post("/", upload.single("image"), activityController.createActivity);
 
 router.use("/:activityId", activityMiddleware.activityLengthCheck);
 router.get("/:activityId", activityController.getActivityById); // get one activity by _id , need auth
-router.patch("/:activityId", activityController.updateActivityById);
+router.patch(
+  "/:activityId",
+  upload.single("image"),
+  activityController.updateActivityById
+);
 router.delete("/:activityId", activityController.deleteActivityById);
 
 module.exports = router;

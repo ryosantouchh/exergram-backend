@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 // define schema
 const activityTypeSchema = new Schema({
+  title: { type: String, required: true, unique: true },
   type: { type: String, required: true, unique: true },
   font_awesome_icon: { type: String, required: true },
 });
