@@ -14,6 +14,7 @@ const authentication = async (req, res, next) => {
       res.status(401).send({ statusCode: 401, message: "unauthorization" });
 
     const token = req.headers.authorization.split(" ")[1]; // [Bearer, token]
+    // console.log(token);
     // verify token using jwt
     const privateKey = process.env.JWT_PRIVATE_KEY;
     const payload = jwt.verify(token, privateKey);
@@ -28,7 +29,8 @@ const authentication = async (req, res, next) => {
 
     next();
   } catch (error) {
-    // res.send("from this");
+    res.send("from this");
+    console.log(error);
     next(error);
   }
 };
