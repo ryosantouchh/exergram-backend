@@ -2,16 +2,31 @@ const userModel = require("../models/user.model.js");
 
 const getUserData = async (req, res, next) => {
   try {
-    if (req.params.userId.length !== 24)
-      res.status(400).send({ message: "incorrect user_id", statusCode: 400 });
+    // if (req.params.userId.length !== 24)
+    //   res.status(400).send({ message: "incorrect user_id", statusCode: 400 });
 
-    const { userId } = req.params; // mock
+    // const { userId } = req.params; // mock
+    const userId = req.user._id;
     const result = await userModel.findById(userId);
 
     if (!result)
       res.status(404).send({ message: "user is not found", statusCode: 404 });
 
-    res.status(200).send(result);
+    const userData = {
+      username: result.username,
+      email: result.email,
+      firstname: result.firstname,
+      lastname: result.lastname,
+      contact_number: result.contact_number,
+      address: result.address,
+      city: result.city,
+      province_state: result.province_state,
+      height: result.height,
+      weight: result.weight,
+      image: result.image,
+    };
+
+    res.status(200).send(userData);
   } catch (error) {
     next(error);
   }
@@ -19,15 +34,16 @@ const getUserData = async (req, res, next) => {
 
 const updateUserData = async (req, res, next) => {
   try {
-    if (req.params.userId.length !== 24)
-      res.status(400).send({ message: "incorrect user_id", statusCode: 400 });
+    // if (req.params.userId.length !== 24)
+    //   res.status(400).send({ message: "incorrect user_id", statusCode: 400 });
 
     if (req.body.username)
       res
         .status(400)
         .send({ message: "username cannot change", statusCode: 400 });
 
-    const { userId } = req.params; // mock
+    // const { userId } = req.params; // mock
+    const userId = req.user._id;
     const lastUpdatedAt = new Date();
     const updateData = { ...req.body, lastUpdatedAt };
     const result = await userModel.findByIdAndUpdate(userId, updateData, {
