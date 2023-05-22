@@ -49,7 +49,7 @@ app.use("/", (error, req, res, next) => {
 // #3 : start server
 const start = async () => {
   await mongodb.connect();
-  app.listen(PORT, HOST, () => {
+  app.listen(PORT, () => {
     console.log("server is running at port : " + PORT);
   });
 };
