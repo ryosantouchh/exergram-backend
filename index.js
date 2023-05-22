@@ -21,13 +21,14 @@ cloudinary.config({
 });
 
 // #1 : CORS
-app.use(
-  cors({
-    credentials: true,
-    origin: process.env.CORS_ORIGIN_URL,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.CORS_ORIGIN_URL,
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   })
+// );
+app.use(cors());
 
 // #2 : parse JSON to object
 app.use(express.json());
