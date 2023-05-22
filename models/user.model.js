@@ -13,13 +13,17 @@ const userSchema = new Schema({
     enum: ["male", "female", "prefer not to say"],
     required: true,
   },
+  contact_number: { type: String },
   birthday: { type: Date, required: true },
-  registeredAt: { type: Date },
-  lastUpdatedAt: { type: Date },
-  location: { type: String },
+  address: { type: String },
+  city: { type: String },
+  province_state: { type: String },
   height: { type: Number },
   weight: { type: Number },
   bio_detail: { type: String },
+  image: { public_id: { type: String }, url: { type: String } },
+  registeredAt: { type: Date },
+  lastUpdatedAt: { type: Date },
 });
 
 // create model
