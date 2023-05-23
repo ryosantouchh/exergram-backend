@@ -1,11 +1,13 @@
 const activityModel = require("../models/activity.model.js");
+const activityTypeModel = require("../models/activityType.model.js");
+const userModel = require("../models/user.model.js");
 const activityUtil = require("../utils/activity.util.js");
 const cloudinary = require("../utils/cloudinary.js");
 
 const createActivity = async (req, res, next) => {
   try {
     const userId = req.user._id;
-
+    // console.log(userId);
     const { title, type, activityDate, duration, note, image, distance } =
       req.body;
     // const createdAt = activityUtil.generateDateGMT7();
@@ -27,7 +29,7 @@ const createActivity = async (req, res, next) => {
           folder: "exergram",
         })
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           newActivity.image = { public_id: res.public_id, url: res.secure_url };
         })
         .catch((err) => console.log(err));
@@ -35,8 +37,21 @@ const createActivity = async (req, res, next) => {
       // "https://res.cloudinary.com/{cloud_name}/{image_type}/v{version}/{public_id}.{format}" to render in frontend
     }
 
+    const foundUser = await userModel.findById({ _id: userId });
+    const foundType = await activityTypeModel.findOne({ type });
+    const METs = foundType.METs;
+    const weight = foundUser.weight;
+
+    const calories_burn = activityUtil.caloriesBurnUsingMETs(
+      weight,
+      METs,
+      duration
+    );
+
+    newActivity.calories_burn = Math.floor(calories_burn);
+
     const response = await activityModel.create(newActivity);
-    console.log(response);
+    // console.log(response);
     res.status(201).send("Activity Created Successfully");
   } catch (error) {
     next(error);
@@ -83,6 +98,10 @@ const getAllActivity = async (req, res, next) => {
     ]);
 
     // res.send(activity_data);
+
+    if (req.headers.pageparams) {
+    } else {
+    }
 
     const response_data = {
       count: {
