@@ -23,8 +23,6 @@ const authentication = async (req, res, next) => {
 
     const userId = payload.userId; // we can using user to check in the DB
     const user = await userService.getUserById(userId);
-    delete user.password;
-    // console.log(user);
     req.user = user;
 
     next();

@@ -8,12 +8,13 @@ const activitySchema = new Schema({
   title: { type: String, required: true },
   type: { type: String, required: true },
   activityDate: { type: Date, required: true },
-  createdAt: { type: Date, required: true },
-  lastUpdatedAt: { type: Date },
   duration: { type: Number, required: true },
   distance: { type: Number },
+  calories_burn: { type: Schema.Types.Decimal128 },
   image: { public_id: { type: String }, url: { type: String } },
   note: { type: String },
+  createdAt: { type: Date, required: true },
+  lastUpdatedAt: { type: Date },
 });
 
 // create model

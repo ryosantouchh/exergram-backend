@@ -36,4 +36,13 @@ const countActivityByType = (activity_data) => {
   return result;
 };
 
-module.exports = { skipValue, generateDateGMT7, countActivityByType };
+const caloriesBurnUsingMETs = (weight, METs, minutes) => {
+  return ((METs * weight * 3.5) / 200) * minutes;
+};
+
+module.exports = {
+  skipValue,
+  generateDateGMT7,
+  countActivityByType,
+  caloriesBurnUsingMETs,
+};
