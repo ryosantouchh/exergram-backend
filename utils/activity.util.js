@@ -40,9 +40,42 @@ const caloriesBurnUsingMETs = (weight, METs, minutes) => {
   return ((METs * weight * 3.5) / 200) * minutes;
 };
 
+const calculateAgeFromBirthdate = (birthdate) => {
+  const birth_date = new Date(birthdate);
+  const birthdateMillisec = birth_date.getTime();
+  const currentTime = Date.now();
+  const ageMillisec = currentTime - birthdateMillisec;
+  const age = Math.floor(ageMillisec / 31557600000);
+  // 31557600000 is millisecond in one year
+  return age;
+};
+
+const calculateBMR = (weight, height, birthdate, gender) => {
+  const age = calculateAgeFromBirthdate(birthdate);
+
+  let bmr = null;
+
+  // req.body.gender
+  if (gender === "male") {
+    bmr = 66 + 13.7 * weight + 5 * height - 6.8 * age;
+  }
+
+  if (gender === "female") {
+    bmr = 655 + 9.6 * weight + 1.8 * height - 4.7 * age;
+  }
+
+  if (gender === "prefer not to say") {
+    bmr = 66 + 13.7 * weight + 5 * height - 6.8 * age;
+  }
+
+  return Math.floor(bmr);
+};
+
 module.exports = {
   skipValue,
   generateDateGMT7,
   countActivityByType,
   caloriesBurnUsingMETs,
+  calculateBMR,
+  calculateAgeFromBirthdate,
 };
