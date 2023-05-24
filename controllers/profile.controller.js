@@ -90,12 +90,15 @@ const updateUserData = async (req, res, next) => {
         .catch((err) => console.log(err));
     }
 
+    // oldUserData for birthday and gender to calculateBMR
+    const oldUserData = await userModel.findById(userId);
     const BMR = activityUtil.calculateBMR(
       req.body.weight,
       req.body.height,
-      req.body.birthday,
-      req.body.gender
+      oldUserData.birthday,
+      oldUserData.gender
     );
+    console.log(BMR);
 
     // const { userId } = req.params; // mock
     const lastUpdatedAt = new Date();
