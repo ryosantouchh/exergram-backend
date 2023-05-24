@@ -16,6 +16,27 @@ const register = async (req, res, next) => {
     const newUser = { ...req.body, registeredAt, password: hashedPassword };
     // console.log(req.body);
     // console.log(newUser);
+
+    const calculateAgeFromBirthdate = (birthdate) => {
+      const birthdateMillisec = birthdate.getTime();
+      const currentTime = Date.now();
+      const ageMillisec = currentTime - birthdateMillisec;
+      const age = Math.floor(ageMillisec / 31557600000);
+      // 31557600000 is millisecond in one year
+      return age;
+    };
+
+    const calculateTDEE = (weight, height, birthdate) => {
+      const age = calculateAgeFromBirthdate(birthdate);
+
+      let bmr = null;
+
+      if (req.body.gender === "male") {
+        bmr = 66 + 13.7 * weight + 5 * height - 6.8 * age;
+        return;
+      }
+    };
+
     await userModel.create(newUser);
     res.status(201).send("create user completed");
   } catch (error) {
@@ -44,7 +65,7 @@ const login = async (req, res, next) => {
         .send({ statusCode: 404, message: "Username or password are wrong" });
 
     const hashedPassword = foundedUserData.password;
-    // console.log(hashedPassword);
+
     const checkPassword = bcrypt.compareSync(password, hashedPassword);
 
     if (!checkPassword)
@@ -53,6 +74,7 @@ const login = async (req, res, next) => {
         .send({ statusCode: 400, message: "incorrect username or password" });
 
     // generate token
+
     const payload = {
       userId: foundedUserData._id,
       firstname: foundedUserData.firstname,

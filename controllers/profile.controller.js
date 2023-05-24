@@ -1,4 +1,6 @@
 const userModel = require("../models/user.model.js");
+const bcrypt = require("bcrypt");
+const cloudinary = require("../utils/cloudinary.js");
 
 const getUserData = async (req, res, next) => {
   try {
@@ -37,13 +39,57 @@ const updateUserData = async (req, res, next) => {
     // if (req.params.userId.length !== 24)
     //   res.status(400).send({ message: "incorrect user_id", statusCode: 400 });
 
+    const userId = req.user._id;
+
     if (req.body.username)
       res
         .status(400)
         .send({ message: "username cannot change", statusCode: 400 });
 
+    if (req.body.passwordForConfirmEdit) {
+      const checkpassword = bcrypt.compareSync(
+        req.body.passwordForConfirmEdit,
+        req.user.password
+      );
+
+      !checkpassword
+        ? res.status(400).send("incorrect username or password")
+        : null;
+    }
+
+    if (req.body.image === "do not have image") {
+      const oldData = await userModel.findByIdAndUpdate(userId, {
+        $unset: { image: 1 },
+      });
+
+      delete req.body.image;
+
+      const img_url = await cloudinary.uploader
+        .destroy(oldData.image.public_id, {
+          folder: "exergram",
+        })
+        .then((response) => {
+          // console.log(response);
+        })
+        .catch((err) => console.log(err));
+    }
+
+    if (req.body.image && req.body.image !== "do not have image") {
+      const img_url = await cloudinary.uploader
+        .upload(req.body.image, {
+          folder: "exergram",
+        })
+        .then((res) => {
+          // console.log(res);
+          req.body.image = {
+            public_id: res.public_id,
+            url: res.secure_url,
+          };
+        })
+        .catch((err) => console.log(err));
+    }
+
     // const { userId } = req.params; // mock
-    const userId = req.user._id;
     const lastUpdatedAt = new Date();
     const updateData = { ...req.body, lastUpdatedAt };
     const result = await userModel.findByIdAndUpdate(userId, updateData, {
