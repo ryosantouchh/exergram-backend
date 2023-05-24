@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model.js");
 const bcrypt = require("bcrypt");
 const cloudinary = require("../utils/cloudinary.js");
+const activityUtil = require("../utils/activity.util.js");
 
 const getUserData = async (req, res, next) => {
   try {
@@ -89,9 +90,16 @@ const updateUserData = async (req, res, next) => {
         .catch((err) => console.log(err));
     }
 
+    const BMR = activityUtil.calculateBMR(
+      req.body.weight,
+      req.body.height,
+      req.body.birthday,
+      req.body.gender
+    );
+
     // const { userId } = req.params; // mock
     const lastUpdatedAt = new Date();
-    const updateData = { ...req.body, lastUpdatedAt };
+    const updateData = { ...req.body, BMR, lastUpdatedAt };
     const result = await userModel.findByIdAndUpdate(userId, updateData, {
       new: true,
     });
