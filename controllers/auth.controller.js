@@ -17,25 +17,44 @@ const register = async (req, res, next) => {
     // console.log(req.body);
     // console.log(newUser);
 
-    const calculateAgeFromBirthdate = (birthdate) => {
-      const birthdateMillisec = birthdate.getTime();
-      const currentTime = Date.now();
-      const ageMillisec = currentTime - birthdateMillisec;
-      const age = Math.floor(ageMillisec / 31557600000);
-      // 31557600000 is millisecond in one year
-      return age;
-    };
+    // const calculateAgeFromBirthdate = (birthdate) => {
+    //   const birthdateMillisec = birthdate.getTime();
+    //   const currentTime = Date.now();
+    //   const ageMillisec = currentTime - birthdateMillisec;
+    //   const age = Math.floor(ageMillisec / 31557600000);
+    //   // 31557600000 is millisecond in one year
+    //   return age;
+    // };
 
-    const calculateTDEE = (weight, height, birthdate) => {
-      const age = calculateAgeFromBirthdate(birthdate);
+    // const calculateBMR = (weight, height, birthdate, gender) => {
+    //   const age = calculateAgeFromBirthdate(birthdate);
 
-      let bmr = null;
+    //   let bmr = null;
 
-      if (req.body.gender === "male") {
-        bmr = 66 + 13.7 * weight + 5 * height - 6.8 * age;
-        return;
-      }
-    };
+    //   // req.body.gender
+    //   if (gender === "male") {
+    //     bmr = 66 + 13.7 * weight + 5 * height - 6.8 * age;
+    //   }
+
+    //   if (gender === "female") {
+    //     bmr = 655 + 9.6 * weight + 1.8 * height - 4.7 * age;
+    //   }
+
+    //   if (gender === "prefer not to say") {
+    //     bmr = 66 + 13.7 * weight + 5 * height - 6.8 * age;
+    //   }
+
+    //   return Math.floor(bmr);
+    // };
+
+    const BMR = activityUtil.calculateBMR(
+      req.body.weight,
+      req.body.height,
+      req.body.birthday,
+      req.body.gender
+    );
+
+    newUser.BMR = BMR;
 
     await userModel.create(newUser);
     res.status(201).send("create user completed");

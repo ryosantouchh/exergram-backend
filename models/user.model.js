@@ -20,7 +20,7 @@ const userSchema = new Schema({
   province_state: { type: String },
   height: { type: Number, required: true },
   weight: { type: Number, required: true },
-  TDEE: { type: Number },
+  BMR: { type: Number },
   bio_detail: { type: String },
   image: { public_id: { type: String }, url: { type: String } },
   registeredAt: { type: Date },

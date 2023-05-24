@@ -4,7 +4,7 @@ const getAllEvent = async (req, res, next) => {
   try {
     const foundEvent = await eventModel.aggregate([
       { $sort: { date: 1 } },
-      { $limit: 3 },
+      { $limit: 2 },
     ]);
     res.status(200).send(foundEvent);
   } catch (error) {
