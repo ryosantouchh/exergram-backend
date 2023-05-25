@@ -101,7 +101,15 @@ const login = async (req, res, next) => {
     };
     const token = tokenUtil.generateToken(payload);
 
-    res.status(200).send({ username, token, message: "login success" });
+    res
+      .status(200)
+      .send({
+        username,
+        firstname: foundedUserData.firstname,
+        lastname: foundedUserData.lastname,
+        token,
+        message: "login success",
+      });
   } catch (error) {
     next(error);
   }
