@@ -98,7 +98,7 @@ const updateUserData = async (req, res, next) => {
       oldUserData.birthday,
       oldUserData.gender
     );
-    console.log(BMR);
+    // console.log(BMR);
 
     // const { userId } = req.params; // mock
     const lastUpdatedAt = new Date();
